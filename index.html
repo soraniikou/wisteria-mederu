@@ -121,7 +121,44 @@
   .s2 { background: linear-gradient(160deg, #0a0010 0%, #1a0025 50%, #2a0015 100%); }
 
   /* Stage 3 - 岐路 */
-  .s3 { background: #050008; }
+  .s3 {
+    background: linear-gradient(165deg, #0f0818 0%, #1a0e2a 42%, #12081f 100%);
+  }
+
+  .s3 .stage-label {
+    color: rgba(186, 168, 214, 0.55);
+  }
+
+  .s3 .main-text {
+    color: #ddd0ef;
+  }
+
+  .s3 .choice-btn {
+    border: 1px solid rgba(132, 98, 168, 0.55);
+    background: rgba(38, 24, 58, 0.72);
+    color: #e6dcf5;
+  }
+
+  .s3 .choice-btn::before {
+    background: rgba(118, 82, 158, 0.28);
+  }
+
+  .s3 .choice-btn:hover {
+    border-color: rgba(168, 138, 205, 0.8);
+    background: rgba(52, 34, 78, 0.88);
+    color: #f4eefc;
+    letter-spacing: 0.35em;
+  }
+
+  .s3 .choice-stay {
+    border-color: rgba(145, 108, 185, 0.62);
+    background: rgba(44, 28, 66, 0.75);
+  }
+
+  .s3 .choice-leave {
+    border-color: rgba(118, 88, 158, 0.58);
+    background: rgba(34, 22, 52, 0.75);
+  }
 
   /* Stage 4 - 真実 */
   .s4 { background: #000000; }
