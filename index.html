@@ -116,6 +116,7 @@
 
   /* Stage 1 - 恋に酔う */
   .s1 { background: linear-gradient(160deg, #1a0830 0%, #3d1a5c 40%, #1a0830 100%); }
+  .s1 .main-text { font-size: 0.7em; }
 
   /* Stage 2 - 狂気 */
   .s2 { background: linear-gradient(160deg, #0a0010 0%, #1a0025 50%, #2a0015 100%); }
@@ -1343,7 +1344,7 @@ const stages = [
     id: 1,
     label: 'Stage 1 — 恋に酔う',
     bg: 's1',
-    text: '藤の花が\nこんなに美しいのは\n毒を宿しているからかもしれない',
+    text: '藤の花が　こんなに美しいのは\n毒を宿しているからかもしれない',
     sub: '— tap to fall deeper —',
     audio: () => { playWisteriaDrone(); playChord([261.63, 329.63, 392], 'sine', 3, 0.08); },
     init: initStage1
