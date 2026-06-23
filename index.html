@@ -615,6 +615,9 @@ let choice = null;
 let stage5ThemeT0 = 0;
 let lastStage5ThemeIdx = -1;
 let stage5ThemeStroke = [55, 155, 92];
+let stage5CurrentThemeIdx = 0;
+/** 「あなたは、まだ枯れてない」の場面のみ ♡ → 青い薔薇 */
+const STAGE5_ROSE_THEME_IDX = 3;
 let stage5ChromeTimer = null;
 const STAGE5_SHARE_TEXT = 'あなたはあなた自身を愛でることを覚えていった';
 /* index.html と同じフォルダに配置（mp3 / m4a / ogg 等。拡張子は下の定数に合わせる） */
@@ -966,6 +969,13 @@ class Vine {
       : 1;
 
     if (this.rebirthStem && this.rebirthHeartStem) {
+      if (
+        this.morphPhase === 'done' &&
+        currentStage === 5 &&
+        stage5CurrentThemeIdx === STAGE5_ROSE_THEME_IDX
+      ) {
+        return;
+      }
       const now = performance.now();
       let r, gCol, b, alpha;
       if (this.morphPhase === 'done') {
@@ -1178,6 +1188,51 @@ function drawStage5HeartFill(points, cx, cy, scale, themeIdx, opacityMult = 1) {
   ctx.globalAlpha = opacityMult;
   ctx.fill();
   ctx.restore();
+}
+
+function traceStage5RosePath(cx, cy, scale) {
+  ctx.beginPath();
+  const layers = [
+    { petals: 8, rx: 4.8, ry: 3.2, dist: 7.2, rot: 0 },
+    { petals: 6, rx: 4.0, ry: 2.8, dist: 5.4, rot: 0.35 },
+    { petals: 5, rx: 3.2, ry: 2.2, dist: 3.6, rot: 0.2 },
+    { petals: 4, rx: 2.2, ry: 1.6, dist: 2.0, rot: 0.5 }
+  ];
+  for (const layer of layers) {
+    for (let i = 0; i < layer.petals; i++) {
+      const a = (i / layer.petals) * Math.PI * 2 - Math.PI / 2 + layer.rot;
+      const px = cx + Math.cos(a) * scale * layer.dist;
+      const py = cy + Math.sin(a) * scale * layer.dist * 0.82 - scale * 1.8;
+      ctx.ellipse(px, py, scale * layer.rx, scale * layer.ry, a + Math.PI / 2, 0, Math.PI * 2);
+    }
+  }
+  ctx.ellipse(cx, cy - scale * 2.2, scale * 2.4, scale * 2.0, 0, 0, Math.PI * 2);
+}
+
+function drawStage5RoseFill(cx, cy, scale, opacityMult = 1) {
+  const maxR = scale * 16;
+  const g = ctx.createRadialGradient(cx, cy - scale * 2, maxR * 0.08, cx, cy, maxR * 1.05);
+  g.addColorStop(0, 'rgba(120, 165, 235, 0.5)');
+  g.addColorStop(0.5, 'rgba(75, 120, 200, 0.3)');
+  g.addColorStop(1, 'rgba(40, 70, 140, 0.08)');
+  ctx.save();
+  ctx.globalAlpha = opacityMult;
+  traceStage5RosePath(cx, cy, scale);
+  ctx.fillStyle = g;
+  ctx.fill();
+  traceStage5RosePath(cx, cy, scale);
+  ctx.strokeStyle = `rgba(55, 95, 175, ${0.52 * opacityMult})`;
+  ctx.lineWidth = Math.max(1.2, scale * 0.35);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawStage5BackgroundShape(v, themeIdx, opacityMult) {
+  if (themeIdx === STAGE5_ROSE_THEME_IDX) {
+    drawStage5RoseFill(v.heartCx, v.heartCy, v.heartScale, opacityMult);
+  } else {
+    drawStage5HeartFill(v.points, v.heartCx, v.heartCy, v.heartScale, themeIdx, opacityMult);
+  }
 }
 
 function ensureStage5VoiceAudio() {
@@ -1741,15 +1796,18 @@ function draw() {
   }
 
   stage5ThemeStroke = [55, 155, 92];
+  stage5CurrentThemeIdx = 0;
   if (currentStage === 5 && vines.length && vines[0].rebirthHeartStem) {
     const v = vines[0];
     if (v.morphPhase === 'done' && v.points.length > 2) {
       if (!stage5ThemeT0) stage5ThemeT0 = performance.now();
       const idx = Math.floor((performance.now() - stage5ThemeT0) / 10000) % 6;
-      drawStage5HeartFill(v.points, v.heartCx, v.heartCy, v.heartScale, idx, 1);
+      stage5CurrentThemeIdx = idx;
+      drawStage5BackgroundShape(v, idx, 1);
       stage5ThemeStroke = STAGE5_THEMES[idx].stroke;
       updateStage5RotatingMessage(idx);
     } else if (v.morphPhase === 'emerge' && v.points.length > 2) {
+      stage5CurrentThemeIdx = 0;
       const elapsed = performance.now() - v.rebirthT0;
       const tLin = Math.min(1, elapsed / v.rebirthDuration);
       const e = tLin < 0.5 ? 4 * tLin * tLin * tLin : 1 - Math.pow(-2 * tLin + 2, 3) / 2;
