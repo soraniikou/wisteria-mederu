@@ -22,6 +22,5 @@
 
 <img src="スクリーンショット%202026-06-23%20121811.png" width="100%" alt="screenshot">
 
-![ScreenShot5](スクリーンショット%202026-04-01%20204941.png)
- <img src="スクリーンショット%202026-06-23%20121811.png" width="100%" alt="wisteria-screenshot">
+
 
