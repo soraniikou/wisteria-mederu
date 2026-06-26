@@ -1270,7 +1270,7 @@ function drawStage5CloverFill(cx, cy, scale, opacityMult = 1) {
   const s = scale * STAGE5_HEART_SIZE_MULT;
   const ox = cx;
   const oy = cy - scale * 1.35;
-  const leafLen = s * 9.6;
+  const leafLen = s * 6.72;
 
   ctx.save();
   ctx.globalAlpha = 0.58 * opacityMult;
@@ -1288,9 +1288,13 @@ function drawStage5CloverFill(cx, cy, scale, opacityMult = 1) {
 
   ctx.beginPath();
   ctx.moveTo(ox, oy);
-  ctx.quadraticCurveTo(ox + s * 0.18, oy + s * 6.4, ox, oy + s * 13.6);
+  ctx.bezierCurveTo(
+    ox + s * 0.32, oy + s * 4.8,
+    ox - s * 0.24, oy + s * 9.6,
+    ox + s * 0.1, oy + s * 13.6
+  );
   ctx.strokeStyle = 'rgba(72, 140, 62, 0.32)';
-  ctx.lineWidth = s * 0.52;
+  ctx.lineWidth = s * 0.26;
   ctx.lineCap = 'round';
   ctx.stroke();
 
