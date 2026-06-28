@@ -22,7 +22,7 @@
 
 <img src="mederu.png" width="100%" alt="mederu">
 
-<img src="mederu.png" width="100%" alt="mederu">
+
 
 <img src="スクリーンショット%202026-06-23%20121811.png" width="100%" alt="screenshot">
 
