@@ -610,21 +610,31 @@ const STAGE5_ROSE_THEME_IDX = 3;
 const STAGE5_CLOVER_THEME_IDX = 1;
 /** 「乾いても、また咲かせられる」の場面のみ ♡ → フェニックス星座 */
 const STAGE5_PHOENIX_THEME_IDX = 4;
+<<<<<<< HEAD
 const STAGE5_PHOENIX_ROTATE_MS = 20000;
 /** 「応えてくれる人、それは私自身」の場面のみ ♡ → ストロベリームーン */
+=======
+/** 「応えてくれる人、それは私自身」の場面のみ ♡ → 光の森 */
+>>>>>>> 114401f912027207a8706116d5fe6e2f4f650d19
 const STAGE5_PRISM_THEME_IDX = 2;
 /** 「焦らなくてもだいじょうぶ」の場面のみ ♡ → ぼんやり浮かぶ緑の月 */
 const STAGE5_MOON_THEME_IDX = 5;
 const STAGE5_MOON_SIZE_MULT = 0.72;
 const STAGE5_ROSE_OPEN_MS = 4200;
+const STAGE5_PHOENIX_ROTATE_MS = 20000;
 const STAGE5_HEART_SIZE_MULT = 0.9;
 let stage5RoseOpenT0 = 0;
+let stage5PhoenixRotateT0 = 0;
 /* index.html と同じフォルダに配置（mp3 / m4a / ogg 等。拡張子は下の定数に合わせる） */
 const STAGE5_VOICE_SRC = 'stage5-voice2.mp3';
 let stage5VoiceAudio = null;
 let stage2DespairT0 = 0;
 let stage4BgT0 = 0;
 let stage4TypeTimer = null;
+<<<<<<< HEAD
+=======
+let stage4TypeTier = null;
+>>>>>>> 114401f912027207a8706116d5fe6e2f4f650d19
 const STAGE4_TYPEWRITER_TEXT =
   '巻き付いてた執着は　あなたではなく　愛されたかった私自身だったかもしれない';
 const STAGE4_TYPEWRITER_TEXT_STAY = 'そのままでいいよ';
@@ -1435,9 +1445,12 @@ function drawStage5PhoenixNebula(r) {
 function drawStage5PhoenixConstellationFill(cx, cy, scale, opacityMult = 1) {
   const s = scale * STAGE5_HEART_SIZE_MULT;
   const ringR = s * 14.2;
+  const rotateElapsed = stage5PhoenixRotateT0 ? performance.now() - stage5PhoenixRotateT0 : 0;
+  const angle = (rotateElapsed / STAGE5_PHOENIX_ROTATE_MS) * Math.PI * 2;
 
   ctx.save();
   ctx.translate(cx, cy - scale * 1.35);
+  ctx.rotate(angle);
   ctx.globalAlpha = opacityMult * 0.62;
 
   ctx.save();
@@ -1533,6 +1546,7 @@ function drawStage5PhoenixConstellationFill(cx, cy, scale, opacityMult = 1) {
   ctx.restore();
 }
 
+<<<<<<< HEAD
 function drawStage5StrawberryMoonFill(cx, cy, scale, opacityMult = 1) {
   const now = performance.now();
   const floatY = Math.sin(now * 0.00112) * scale * 1.7;
@@ -1564,6 +1578,85 @@ function drawStage5StrawberryMoonFill(cx, cy, scale, opacityMult = 1) {
   ctx.shadowBlur = r * 0.9;
   ctx.beginPath();
   ctx.arc(ox, oy, r, 0, Math.PI * 2);
+=======
+function drawStage5LightForestFill(cx, cy, scale, opacityMult = 1) {
+  const s = scale * STAGE5_HEART_SIZE_MULT;
+  const ox = cx;
+  const oy = cy - scale * 1.35;
+  const now = performance.now();
+  const sway = Math.sin(now * 0.00072) * s * 0.35;
+
+  ctx.save();
+  ctx.translate(ox, oy);
+  ctx.globalAlpha = 0.58 * opacityMult;
+
+  const mist = ctx.createRadialGradient(0, s * 2, 0, 0, s * 2, s * 18);
+  mist.addColorStop(0, 'rgba(180, 210, 170, 0.14)');
+  mist.addColorStop(0.4, 'rgba(140, 185, 160, 0.08)');
+  mist.addColorStop(0.75, 'rgba(120, 160, 200, 0.05)');
+  mist.addColorStop(1, 'rgba(100, 130, 180, 0)');
+  ctx.fillStyle = mist;
+  ctx.beginPath();
+  ctx.arc(0, s * 2, s * 18, 0, Math.PI * 2);
+  ctx.fill();
+
+  const beams = [
+    { x: -s * 5.2, lean: -0.08, w: s * 2.4, h: s * 20, a: 0.1 },
+    { x: -s * 2.4, lean: -0.03, w: s * 1.9, h: s * 18, a: 0.08 },
+    { x: s * 0.6, lean: 0.02, w: s * 2.2, h: s * 21, a: 0.11 },
+    { x: s * 3.4, lean: 0.06, w: s * 2, h: s * 19, a: 0.09 },
+    { x: s * 5.8, lean: 0.1, w: s * 1.7, h: s * 17, a: 0.07 }
+  ];
+  beams.forEach((b, i) => {
+    const bx = b.x + sway * (0.4 + (i % 3) * 0.2);
+    const grad = ctx.createLinearGradient(bx, -b.h * 0.55, bx + b.lean * b.h, b.h * 0.65);
+    grad.addColorStop(0, `rgba(255, 252, 235, ${b.a * 0.35})`);
+    grad.addColorStop(0.35, `rgba(230, 245, 210, ${b.a})`);
+    grad.addColorStop(0.65, `rgba(200, 230, 255, ${b.a * 0.75})`);
+    grad.addColorStop(1, 'rgba(180, 210, 240, 0)');
+    ctx.fillStyle = grad;
+    ctx.shadowColor = 'rgba(220, 240, 200, 0.18)';
+    ctx.shadowBlur = s * 2.8;
+    ctx.beginPath();
+    ctx.ellipse(bx, s * 1.2, b.w * 0.5, b.h * 0.5, b.lean, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  ctx.shadowBlur = 0;
+
+  const canopy = ctx.createRadialGradient(0, -s * 6, s * 0.5, 0, -s * 4, s * 14);
+  canopy.addColorStop(0, 'rgba(255, 248, 220, 0.16)');
+  canopy.addColorStop(0.45, 'rgba(210, 235, 190, 0.1)');
+  canopy.addColorStop(1, 'rgba(160, 200, 230, 0)');
+  ctx.fillStyle = canopy;
+  ctx.beginPath();
+  ctx.ellipse(0, -s * 4, s * 13, s * 8, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  for (let i = 0; i < 22; i++) {
+    const phase = i * 1.73;
+    const px = ((i % 7) - 3) * s * 2.6 + Math.sin(now * 0.00085 + phase) * s * 0.5 + sway * 0.3;
+    const py = ((i % 5) - 2) * s * 3.1 + Math.cos(now * 0.00062 + phase) * s * 0.45;
+    const pr = s * (0.22 + (i % 4) * 0.08);
+    const glow = ctx.createRadialGradient(px, py, 0, px, py, pr * 2.8);
+    glow.addColorStop(0, `rgba(255, 250, 225, ${0.22 + (i % 3) * 0.04})`);
+    glow.addColorStop(0.5, `rgba(210, 235, 255, ${0.1 + (i % 2) * 0.04})`);
+    glow.addColorStop(1, 'rgba(180, 210, 240, 0)');
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(px, py, pr * 2.8, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  const core = ctx.createRadialGradient(0, s * 0.5, 0, 0, s * 0.5, s * 9);
+  core.addColorStop(0, 'rgba(255, 252, 238, 0.2)');
+  core.addColorStop(0.4, 'rgba(220, 240, 215, 0.1)');
+  core.addColorStop(1, 'rgba(190, 215, 240, 0)');
+  ctx.fillStyle = core;
+  ctx.shadowColor = 'rgba(255, 245, 220, 0.2)';
+  ctx.shadowBlur = s * 3.2;
+  ctx.beginPath();
+  ctx.arc(0, s * 0.5, s * 9, 0, Math.PI * 2);
+>>>>>>> 114401f912027207a8706116d5fe6e2f4f650d19
   ctx.fill();
   ctx.shadowBlur = 0;
 
@@ -1615,7 +1708,11 @@ function drawStage5BackgroundShape(v, themeIdx, opacityMult) {
   } else if (themeIdx === STAGE5_PHOENIX_THEME_IDX) {
     drawStage5PhoenixConstellationFill(v.heartCx, v.heartCy, v.heartScale, opacityMult);
   } else if (themeIdx === STAGE5_PRISM_THEME_IDX) {
+<<<<<<< HEAD
     drawStage5StrawberryMoonFill(v.heartCx, v.heartCy, v.heartScale, opacityMult);
+=======
+    drawStage5LightForestFill(v.heartCx, v.heartCy, v.heartScale, opacityMult);
+>>>>>>> 114401f912027207a8706116d5fe6e2f4f650d19
   } else if (themeIdx === STAGE5_MOON_THEME_IDX) {
     drawStage5GreenMoonFill(v.heartCx, v.heartCy, v.heartScale, opacityMult);
   } else {
@@ -1655,6 +1752,9 @@ function updateStage5RotatingMessage(idx) {
     stage5RoseOpenT0 = performance.now();
   } else {
     stage5RoseOpenT0 = 0;
+  }
+  if (idx === STAGE5_PHOENIX_THEME_IDX) {
+    stage5PhoenixRotateT0 = performance.now();
   }
   lastStage5ThemeIdx = idx;
   const el = document.getElementById('s5RotatingMsg');
@@ -1848,6 +1948,7 @@ function initStage5() {
   stage5ThemeT0 = 0;
   lastStage5ThemeIdx = -1;
   stage5RoseOpenT0 = 0;
+  stage5PhoenixRotateT0 = 0;
 
   // === Phase 1: 甘い罠の残影 ===
   // 最初は暗い蔓が画面に残っているように見える（madness vinesを弱く生成）
@@ -2104,6 +2205,7 @@ function goToStage(n) {
     stage5ThemeT0 = 0;
     lastStage5ThemeIdx = -1;
     stage5RoseOpenT0 = 0;
+    stage5PhoenixRotateT0 = 0;
     stage5ThemeStroke = [55, 155, 92];
     document.getElementById('tapHint').style.display = 'none';
     mainText.innerHTML =
@@ -2176,6 +2278,7 @@ function draw() {
     stage5ThemeT0 = 0;
     lastStage5ThemeIdx = -1;
     stage5RoseOpenT0 = 0;
+    stage5PhoenixRotateT0 = 0;
     stopStage5Voice();
   }
 
