@@ -424,8 +424,8 @@
     <div class="main-text" id="mainText"></div>
     <div class="truth-box" id="truthBox"></div>
     <div class="choices show" id="choices">
-      <button class="choice-btn choice-stay" onclick="choose('stay')">愛し続ける</button>
-      <button class="choice-btn choice-leave" onclick="choose('leave')">離れる</button>
+      <button class="choice-btn choice-stay" onclick="choose('stay')">自分を愛する</button>
+      <button class="choice-btn choice-leave" onclick="choose('leave')">自分を愛せない</button>
     </div>
     <div class="sub-text" id="subText"></div>
   </div>
@@ -441,7 +441,7 @@
 
 <div class="tap-hint" id="tapHint">— tap —</div>
 
-<button type="button" id="backHome" class="back-home" aria-label="最初の画面へ">↩ 最初へ</button>
+<button type="button" id="backHome" class="back-home" aria-label="back">back</button>
 
 <script>
 // ─── Audio Engine ───────────────────────────────
@@ -611,7 +611,7 @@ const STAGE5_CLOVER_THEME_IDX = 1;
 /** 「乾いても、また咲かせられる」の場面のみ ♡ → フェニックス星座 */
 const STAGE5_PHOENIX_THEME_IDX = 4;
 const STAGE5_PHOENIX_ROTATE_MS = 20000;
-/** 「応えてくれる人、それは私自身」の場面のみ ♡ → プリズムと分光 */
+/** 「応えてくれる人、それは私自身」の場面のみ ♡ → ストロベリームーン */
 const STAGE5_PRISM_THEME_IDX = 2;
 /** 「焦らなくてもだいじょうぶ」の場面のみ ♡ → ぼんやり浮かぶ緑の月 */
 const STAGE5_MOON_THEME_IDX = 5;
@@ -627,7 +627,7 @@ let stage4BgT0 = 0;
 let stage4TypeTimer = null;
 const STAGE4_TYPEWRITER_TEXT =
   '巻き付いてた執着は　あなたではなく　愛されたかった私自身だったかもしれない';
-const STAGE4_TYPEWRITER_TEXT_STAY = '愛してるのは相手？愛されたいだけ？';
+const STAGE4_TYPEWRITER_TEXT_STAY = 'そのままでいいよ';
 const STAGE4_LEAVE_LINE1 = '巻き付いてた執着は　あなたではなく';
 const STAGE4_LEAVE_LINE2 = '愛されたかった私自身だったかもしれない';
 
@@ -1533,98 +1533,38 @@ function drawStage5PhoenixConstellationFill(cx, cy, scale, opacityMult = 1) {
   ctx.restore();
 }
 
-function drawStage5PrismFill(cx, cy, scale, opacityMult = 1) {
+function drawStage5StrawberryMoonFill(cx, cy, scale, opacityMult = 1) {
+  const now = performance.now();
+  const floatY = Math.sin(now * 0.00112) * scale * 1.7;
+  const floatX = Math.sin(now * 0.00088 + 1.1) * scale * 0.45;
   const s = scale * STAGE5_HEART_SIZE_MULT;
-  const ox = cx;
-  const oy = cy - scale * 1.35;
-  const triH = s * 9.2;
-  const triW = s * 7.4;
-  const apex = { x: 0, y: -triH * 0.52 };
-  const bl = { x: -triW * 0.5, y: triH * 0.48 };
-  const br = { x: triW * 0.5, y: triH * 0.48 };
-  const exitX = triW * 0.38;
-  const exitY = triH * 0.02;
+  const r = s * 11;
+  const ox = cx + floatX;
+  const oy = cy + floatY - scale * 1.35;
 
   ctx.save();
-  ctx.translate(ox, oy);
-  ctx.globalAlpha = 0.62 * opacityMult;
+  ctx.globalAlpha = opacityMult;
 
-  const haze = ctx.createRadialGradient(0, 0, 0, 0, 0, triH * 1.6);
-  haze.addColorStop(0, 'rgba(255, 255, 255, 0.1)');
-  haze.addColorStop(0.45, 'rgba(200, 210, 255, 0.06)');
-  haze.addColorStop(1, 'rgba(160, 170, 220, 0)');
+  const haze = ctx.createRadialGradient(ox, oy, r * 0.15, ox, oy, r * 1.75);
+  haze.addColorStop(0, 'rgba(255, 175, 155, 0.22)');
+  haze.addColorStop(0.5, 'rgba(235, 125, 115, 0.12)');
+  haze.addColorStop(1, 'rgba(175, 85, 95, 0)');
   ctx.fillStyle = haze;
   ctx.beginPath();
-  ctx.arc(0, 0, triH * 1.6, 0, Math.PI * 2);
+  ctx.arc(ox, oy, r * 1.75, 0, Math.PI * 2);
   ctx.fill();
 
-  const beam = ctx.createLinearGradient(-s * 16, -s * 1.2, exitX, exitY);
-  beam.addColorStop(0, 'rgba(255, 255, 255, 0)');
-  beam.addColorStop(0.35, 'rgba(255, 255, 255, 0.06)');
-  beam.addColorStop(0.72, 'rgba(255, 255, 255, 0.22)');
-  beam.addColorStop(1, 'rgba(255, 255, 255, 0.28)');
-  ctx.fillStyle = beam;
-  ctx.shadowColor = 'rgba(255, 255, 255, 0.25)';
-  ctx.shadowBlur = s * 2.4;
+  const moon = ctx.createRadialGradient(ox - r * 0.3, oy - r * 0.34, r * 0.08, ox, oy, r);
+  moon.addColorStop(0, 'rgba(255, 215, 195, 0.38)');
+  moon.addColorStop(0.4, 'rgba(245, 155, 135, 0.3)');
+  moon.addColorStop(0.75, 'rgba(215, 105, 105, 0.18)');
+  moon.addColorStop(1, 'rgba(175, 75, 85, 0)');
+  ctx.fillStyle = moon;
+  ctx.shadowColor = 'rgba(240, 135, 115, 0.45)';
+  ctx.shadowBlur = r * 0.9;
   ctx.beginPath();
-  ctx.moveTo(-s * 16, -s * 2.8);
-  ctx.lineTo(-triW * 0.42, -triH * 0.08);
-  ctx.lineTo(-triW * 0.42, triH * 0.22);
-  ctx.lineTo(-s * 16, s * 1.6);
-  ctx.closePath();
+  ctx.arc(ox, oy, r, 0, Math.PI * 2);
   ctx.fill();
-  ctx.shadowBlur = 0;
-
-  const spectrumBands = [
-    { hue: 275, spread: -0.42 },
-    { hue: 245, spread: -0.28 },
-    { hue: 215, spread: -0.14 },
-    { hue: 185, spread: 0 },
-    { hue: 155, spread: 0.14 },
-    { hue: 125, spread: 0.28 },
-    { hue: 95, spread: 0.42 },
-    { hue: 65, spread: 0.56 },
-    { hue: 35, spread: 0.7 },
-    { hue: 5, spread: 0.84 }
-  ];
-  const rayLen = s * 15.5;
-  ctx.shadowBlur = s * 2.2;
-  spectrumBands.forEach(({ hue, spread }) => {
-    const angle = spread;
-    const ex = exitX + Math.cos(angle) * rayLen;
-    const ey = exitY + Math.sin(angle) * rayLen;
-    const grad = ctx.createLinearGradient(exitX, exitY, ex, ey);
-    grad.addColorStop(0, `hsla(${hue}, 72%, 72%, 0.28)`);
-    grad.addColorStop(0.55, `hsla(${hue}, 68%, 62%, 0.16)`);
-    grad.addColorStop(1, `hsla(${hue}, 65%, 55%, 0)`);
-    ctx.fillStyle = grad;
-    ctx.shadowColor = `hsla(${hue}, 70%, 65%, 0.22)`;
-    ctx.beginPath();
-    ctx.moveTo(exitX, exitY);
-    ctx.lineTo(ex + Math.sin(angle + 0.06) * s * 0.9, ey - Math.cos(angle + 0.06) * s * 0.9);
-    ctx.lineTo(ex - Math.sin(angle - 0.06) * s * 0.9, ey + Math.cos(angle - 0.06) * s * 0.9);
-    ctx.closePath();
-    ctx.fill();
-  });
-  ctx.shadowBlur = 0;
-
-  const prismGrad = ctx.createLinearGradient(bl.x, bl.y, br.x, apex.y);
-  prismGrad.addColorStop(0, 'rgba(220, 235, 255, 0.14)');
-  prismGrad.addColorStop(0.45, 'rgba(255, 255, 255, 0.22)');
-  prismGrad.addColorStop(1, 'rgba(200, 225, 255, 0.1)');
-  ctx.fillStyle = prismGrad;
-  ctx.shadowColor = 'rgba(200, 220, 255, 0.35)';
-  ctx.shadowBlur = s * 1.8;
-  ctx.beginPath();
-  ctx.moveTo(apex.x, apex.y);
-  ctx.lineTo(bl.x, bl.y);
-  ctx.lineTo(br.x, br.y);
-  ctx.closePath();
-  ctx.fill();
-  ctx.strokeStyle = 'rgba(235, 245, 255, 0.38)';
-  ctx.lineWidth = s * 0.14;
-  ctx.lineJoin = 'round';
-  ctx.stroke();
   ctx.shadowBlur = 0;
 
   ctx.restore();
@@ -1675,7 +1615,7 @@ function drawStage5BackgroundShape(v, themeIdx, opacityMult) {
   } else if (themeIdx === STAGE5_PHOENIX_THEME_IDX) {
     drawStage5PhoenixConstellationFill(v.heartCx, v.heartCy, v.heartScale, opacityMult);
   } else if (themeIdx === STAGE5_PRISM_THEME_IDX) {
-    drawStage5PrismFill(v.heartCx, v.heartCy, v.heartScale, opacityMult);
+    drawStage5StrawberryMoonFill(v.heartCx, v.heartCy, v.heartScale, opacityMult);
   } else if (themeIdx === STAGE5_MOON_THEME_IDX) {
     drawStage5GreenMoonFill(v.heartCx, v.heartCy, v.heartScale, opacityMult);
   } else {
@@ -1750,7 +1690,7 @@ const stages = [
     id: 3,
     label: 'Stage 3 — 岐路',
     bg: 's3',
-    text: 'あなたはどちらを選ぶ?',
+    text: '今日はどんな気分？',
     sub: null,
     audio: () => playTone(110, 'sine', 8, 0.05),
     init: initStage3
