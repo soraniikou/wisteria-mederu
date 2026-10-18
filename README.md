@@ -17,7 +17,7 @@
 
 
 ![ScreenShot2](スクリーンショット%202026-04-01%20204757.png)
-![ScreenShot3](スクリーンショット%202026-04-01%20204828.png)
+
 <img src="bloom%20again.png" width="100%" alt="bloom-again">
 
 <img src="mederu.png" width="100%" alt="mederu">
